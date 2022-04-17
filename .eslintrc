@@ -1,12 +1,11 @@
 {
   "root": true,
   "parser": "@typescript-eslint/parser",
-  "plugins": [
-    "@typesctipt-eslint"
-  ],
+  "plugins": ["@typesctipt-eslint"],
   "rules": {
-    "semi": ["off"],
-    "@typesctipt-eslint/semi": ["warn"],
+    "semi": ["warn", "always"],
+    "@typesctipt-eslint/semi": ["warn", "always"],
+    "@typesctipt-eslint/no-unused-vars": ["warn", "always"],
     "@typesctipt-eslint/no-empty-interface": [
       "error",
       { "allowSingleExtends": true }
