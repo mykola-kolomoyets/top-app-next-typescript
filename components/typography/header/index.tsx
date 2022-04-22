@@ -1,20 +1,25 @@
-import { DetailedHTMLProps, FC, HTMLAttributes, ReactNode } from "react";
+import { FC } from "react";
 import { HeaderTag } from "../../../utils/enums";
-import { WithChildren } from "../../../utils/types";
+import { Detailed, WithChildren } from "../../../utils/types";
 
 import styles from "./header.module.css";
 
-type TypographyHeadingProps = {
+interface TypographyHeadingProps extends Detailed<HTMLHeadingElement> {
   tag: HeaderTag;
-} & DetailedHTMLProps<HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>;
+}
 
 const Heading: FC<WithChildren<TypographyHeadingProps>> = ({
   tag,
-  children
+  children,
+  ...props
 }) => {
   const HeadingTag = tag;
 
-  return <HeadingTag className={styles[tag]}>{children}</HeadingTag>;
+  return (
+    <HeadingTag className={styles[tag]} {...props}>
+      {children}
+    </HeadingTag>
+  );
 };
 
 export default Heading;

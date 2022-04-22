@@ -1,0 +1,55 @@
+.badge {
+  display: inline-block;
+  box-sizing: border-box;
+
+  margin-right: 5px;
+  border-radius: 20px;
+  padding: 5px 10px;
+  color: var(--black);
+  text-align: center;
+}
+
+.badge__small {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 12px;
+}
+
+.badge__middle {
+  font-size: 14px;
+  line-height: 14px;
+}
+
+.badge__ghost {
+  border: 1px solid var(--grey-light);
+}
+
+.badge__red {
+  background-color: var(--red-dense);
+  color: var(--white);
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 19px;
+}
+
+.badge__green {
+  color: var(--green);
+  background-color: var(--green-light);
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 12px;
+}
+
+.badge__grey {
+  background-color: #B3C0D9;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 14px;
+}
+
+.badge__primary {
+  color: var(--primary);
+  background-color: transparent;
+  border: 1px solid var(--primary);
+
+}

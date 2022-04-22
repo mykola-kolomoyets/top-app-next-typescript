@@ -1,0 +1,7 @@
+.star {
+  display: inline-block;
+}
+
+.star__filled svg path {
+  fill: var(--primary);
+}
