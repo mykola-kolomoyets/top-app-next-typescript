@@ -1,9 +1,10 @@
 import Head from "next/head";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, FC } from "react";
 
 import { Typography, Button, Badge } from "../components";
 import Rating from "../components/rating";
+import { withLayout } from "../layout";
 import {
   BadgeSize,
   BadgeView,
@@ -13,14 +14,14 @@ import {
   TextView
 } from "../utils/enums";
 
-export default function Home() {
+const Home: FC = () => {
   const [rating, setRating] = useState(0);
   const onRatingChange = (rating: number) => {
     setRating(rating);
   };
 
   return (
-    <section style={{ background: "white" }}>
+    <div style={{ background: "white" }}>
       <Typography.Header tag={HeaderTag.h1}>Hello world</Typography.Header>
 
       <Typography.Text view={TextView.large}>Hello world</Typography.Text>
@@ -41,6 +42,8 @@ export default function Home() {
       </Badge>
 
       <Rating rating={rating} isEditable onChangeRating={onRatingChange} />
-    </section>
+    </div>
   );
-}
+};
+
+export default withLayout(Home);

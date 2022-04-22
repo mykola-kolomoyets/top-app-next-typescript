@@ -16,7 +16,7 @@ const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
           rel="stylesheet"
         />
       </Head>
-      <Component {...pageProps} />;
+      <Component {...pageProps} />
     </Fragment>
   );
 };
