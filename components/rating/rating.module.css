@@ -1,5 +1,6 @@
 .star {
   display: inline-block;
+  padding-right: 5px;
 }
 
 .star__filled svg path {

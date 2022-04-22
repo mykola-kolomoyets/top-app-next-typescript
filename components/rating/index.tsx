@@ -9,7 +9,7 @@ import styles from "./rating.module.css";
 interface RatingProps extends Detailed<HTMLDivElement> {
   isEditable?: boolean;
   rating: number;
-  onChangeRating: (rating: number) => void;
+  onChangeRating?: (rating: number) => void;
 }
 
 const defaultRatings = new Array(5).fill(0);
@@ -33,7 +33,7 @@ const Rating: FC<RatingProps> = ({
           className={classnames(styles["star"], {
             [styles["star__filled"]]: rating === 1
           })}
-          onClick={() => onChangeRating(index + 1)}
+          onClick={isEditable ? () => onChangeRating(index + 1) : null}
         />
       )),
     [rating]

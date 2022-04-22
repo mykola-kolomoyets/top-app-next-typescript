@@ -40,7 +40,7 @@ export default function Home() {
         10000
       </Badge>
 
-      <Rating rating={rating} onChangeRating={onRatingChange} />
+      <Rating rating={rating} isEditable onChangeRating={onRatingChange} />
     </section>
   );
 }
