@@ -37,3 +37,10 @@ export enum Direction {
   up = "up",
   down = "down"
 }
+
+export enum TopLevelCategory {
+  Courses,
+  Services,
+  Books,
+  Products
+}

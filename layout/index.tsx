@@ -5,6 +5,8 @@ import Header from "./header";
 import Sidebar from "./sidebar";
 
 import styles from "./layout.module.css";
+import AppProvider from "../store/providers/app-provider";
+import { AppStore } from "../store/contexts/app-context";
 
 interface LayoutProps extends Detailed<HTMLDivElement> {}
 
@@ -20,12 +22,16 @@ const Layout: FC<WithChildren<LayoutProps>> = ({ children }) => (
   </div>
 );
 
-export const withLayout = <T extends Record<string, unknown>>(
+export const withLayout = <T extends Record<string, unknown> & AppStore>(
   Component: FunctionComponent<T>
 ) => {
   return (props: T) => (
-    <Layout>
-      <Component {...props} />
-    </Layout>
+    <AppProvider
+      startState={{ menu: props.menu, firstCategory: props.firstCategory }}
+    >
+      <Layout>
+        <Component {...props} />
+      </Layout>
+    </AppProvider>
   );
 };

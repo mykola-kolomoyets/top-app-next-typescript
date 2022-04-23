@@ -1,6 +1,6 @@
-import Head from "next/head";
-import Image from "next/image";
+import { GetStaticProps } from "next";
 import { useState, FC } from "react";
+import axios from "axios";
 
 import { Typography, Button, Badge } from "../components";
 import Rating from "../components/rating";
@@ -13,8 +13,14 @@ import {
   HeaderTag,
   TextView
 } from "../utils/enums";
+import { MenuItem } from "../utils/types";
 
-const Home: FC = () => {
+type HomeProps = {
+  menu: MenuItem[];
+  firstCategory: number;
+};
+
+const Home: FC<HomeProps> = ({ menu, firstCategory }) => {
   const [rating, setRating] = useState(0);
   const onRatingChange = (rating: number) => {
     setRating(rating);
@@ -47,3 +53,18 @@ const Home: FC = () => {
 };
 
 export default withLayout(Home);
+
+export const getStaticProps: GetStaticProps<HomeProps> = async () => {
+  const firstCategory = 0;
+  const { data: menu } = await axios.post<MenuItem[]>(
+    `${process.env.NEXT_PUBLIC_DOMAIN}/api/top-page/find`,
+    { firstCategory }
+  );
+
+  return {
+    props: {
+      menu,
+      firstCategory
+    }
+  };
+};
