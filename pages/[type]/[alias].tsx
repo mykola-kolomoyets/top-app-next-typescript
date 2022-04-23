@@ -5,15 +5,15 @@ import axios from "axios";
 import { withLayout } from "../../layout";
 import { MenuItem, ProductModel, TopPageModel } from "../../utils/types";
 import { ParsedUrlQuery } from "querystring";
+import { firstLevelMenu } from "../../layout/sidebar/menu";
+import { TopLevelCategory } from "../../utils/enums";
 
 type CourseProps = {
   menu: MenuItem[];
-  firstCategory: number;
+  firstCategory: TopLevelCategory;
   page: TopPageModel;
   products: ProductModel[];
 };
-
-const firstCategory = 0;
 
 const Courses: FC<CourseProps> = ({ menu, page, products }) => {
   return (
@@ -24,15 +24,23 @@ const Courses: FC<CourseProps> = ({ menu, page, products }) => {
 export default withLayout(Courses);
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const { data: menu } = await axios.post<MenuItem[]>(
-    `${process.env.NEXT_PUBLIC_DOMAIN}/api/top-page/find`,
-    { firstCategory }
-  );
+  let paths: string[] = [];
+
+  for (const menuItem of firstLevelMenu) {
+    const { data: menu } = await axios.post<MenuItem[]>(
+      `${process.env.NEXT_PUBLIC_DOMAIN}/api/top-page/find`,
+      { firstCategory: menuItem.id }
+    );
+
+    paths = paths.concat(
+      menu.flatMap((item) =>
+        item.pages.map((page) => `/${menuItem.route}/${page.alias}`)
+      )
+    );
+  }
 
   return {
-    paths: menu.flatMap((item) =>
-      item.pages.map((page) => `/courses/${page.alias}`)
-    ),
+    paths,
     fallback: true
   };
 };
@@ -41,15 +49,23 @@ export const getStaticProps: GetStaticProps<CourseProps> = async ({
   params,
   params: { alias }
 }: GetStaticPropsContext<ParsedUrlQuery>) => {
-  if (!params) {
+  if (!params)
     return {
       notFound: true
     };
-  }
+
+  const firstCategoryItem = firstLevelMenu.find(
+    (menu) => menu.route === params.type
+  );
+
+  if (!firstCategoryItem)
+    return {
+      notFound: true
+    };
 
   const { data: menu } = await axios.post<MenuItem[]>(
     `${process.env.NEXT_PUBLIC_DOMAIN}/api/top-page/find`,
-    { firstCategory }
+    { firstCategory: firstCategoryItem.id }
   );
 
   const { data: page } = await axios.get<TopPageModel>(
@@ -67,7 +83,7 @@ export const getStaticProps: GetStaticProps<CourseProps> = async ({
   return {
     props: {
       menu,
-      firstCategory,
+      firstCategory: firstCategoryItem.id,
       page,
       products
     }

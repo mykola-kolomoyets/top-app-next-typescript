@@ -8,36 +8,15 @@ import { TopLevelCategory } from "../../../utils/enums";
 import { capitalize } from "../../../utils/fn";
 import { FirstLevelMenuItem, MenuItem, PageItem } from "../../../utils/types";
 
-import BooksIcon from "./assets/books";
-import CoursesIcon from "./assets/courses";
-import ProductIcon from "./assets/product";
-import ServicesIcon from "./assets/services";
-
 import styles from "./menu.module.css";
 import { useRouter } from "next/router";
+import {
+  firstLevelRoutes,
+  firstLevelNames,
+  firstLevelIcons
+} from "./menu.constants";
 
-const firstLevelRoutes: FirstLevelMenuItem["route"][] = [
-  "courses",
-  "services",
-  "books",
-  "products"
-];
-
-const firstLevelNames: FirstLevelMenuItem["name"][] = [
-  "Курсы",
-  "Сервисы",
-  "Книги",
-  "Продукты"
-];
-
-const firstLevelIcons: FirstLevelMenuItem["icon"][] = [
-  <CoursesIcon />,
-  <ServicesIcon />,
-  <BooksIcon />,
-  <ProductIcon />
-];
-
-const firstLevelMenu: FirstLevelMenuItem[] = firstLevelRoutes.map(
+export const firstLevelMenu: FirstLevelMenuItem[] = firstLevelRoutes.map(
   (route, index) => ({
     route,
     name: firstLevelNames[index],
@@ -56,10 +35,11 @@ const Menu: FC = () => {
   );
 };
 
-const FirstLevelMenu: FC<{
+type FirstLevelMenuProps = {
   firstCategory: TopLevelCategory;
   menu: MenuItem[];
-}> = ({ firstCategory, menu }) => {
+};
+const FirstLevelMenu: FC<FirstLevelMenuProps> = ({ firstCategory, menu }) => {
   const { setData } = AppContext.useContext();
 
   const menuClasses = (id: TopLevelCategory) =>
@@ -68,32 +48,28 @@ const FirstLevelMenu: FC<{
     });
 
   const onSecondLevelOpen = (category: string) => {
-    const newMenu = menu.map((item) => ({
-      ...item,
-      isOpened:
-        item._id.secondCategory === category ? !item.isOpened : item.isOpened
-    }));
+    const newMenu = menu.map((item) => {
+      item.isOpened =
+        item._id.secondCategory === category ? !item.isOpened : item.isOpened;
+      return item;
+    });
 
     setData({ menu: newMenu });
   };
 
-  const isActive = (id: TopLevelCategory) => {
-    return id === firstCategory;
-  };
+  const isActive = (id: TopLevelCategory) => id === firstCategory;
 
   return (
     <Fragment>
       {firstLevelMenu.map((item) => (
         <div key={item.route}>
-          <Link href={`/${item.route}`}>
-            <a>
-              <span className={menuClasses(item.id)}>
-                {item.icon}
+          <div onClick={() => setData({ firstCategory: item.id })}>
+            <span className={menuClasses(item.id)}>
+              {item.icon}
 
-                <span>{item.name}</span>
-              </span>
-            </a>
-          </Link>
+              <span>{item.name}</span>
+            </span>
+          </div>
 
           {isActive(item.id) && (
             <SecondLevelMenu
@@ -108,11 +84,12 @@ const FirstLevelMenu: FC<{
   );
 };
 
-const SecondLevelMenu: FC<{
+type SecondLevelMenuProps = {
   menu: MenuItem[];
   route: string;
   onOpen: (category: string) => void;
-}> = ({ menu, route, onOpen }) => {
+};
+const SecondLevelMenu: FC<SecondLevelMenuProps> = ({ menu, route, onOpen }) => {
   const thirdLevelClasses = (isOpened: boolean) =>
     classnames(styles.secondLevelBlock, {
       [styles.secondLevelBlockOpen]: isOpened
@@ -123,12 +100,12 @@ const SecondLevelMenu: FC<{
   return (
     <div className={styles.secondBlock}>
       {menu.map((item) => {
-        if (
+        const isOpened =
           item.pages
             .map((page) => page.alias)
-            .includes(router.asPath.split("/")[2])
-        )
-          item.isOpened = true;
+            .includes(router.asPath.split("/")[2]) || item.isOpened;
+
+        item.isOpened = isOpened;
 
         return (
           <div key={item._id.secondCategory}>
@@ -151,10 +128,8 @@ const SecondLevelMenu: FC<{
   );
 };
 
-const ThirdLevelMenu: FC<{ pages: PageItem[]; route: string }> = ({
-  pages,
-  route
-}) => {
+type ThirdLevelMenuProps = { pages: PageItem[]; route: string };
+const ThirdLevelMenu: FC<ThirdLevelMenuProps> = ({ pages, route }) => {
   const router = useRouter();
 
   const pageItemClasses = (isOpened: boolean) =>
